@@ -18,10 +18,10 @@ function Header() {
           alt=""
         />
 
-        <form className="header__search">
+        <div className="header__search">
           <SearchIcon />
           <input type="text" />
-        </form>
+        </div>
       </div>
 
       <div className="header__right">
