@@ -8,8 +8,18 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import ChatIcon from "@mui/icons-material/Chat";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Me from "../asset/DSC_0328.jpg";
+import { useDispatch } from "react-redux";
+import { logout } from "../features/userSlice";
+import { auth } from "../firabse";
 
 function Header() {
+  const dispatch = useDispatch();
+
+  const logoutOfApp = () => {
+    dispatch(logout());
+    auth.signOut();
+  };
+
   return (
     <div className="header">
       <div className="header__left">
@@ -30,7 +40,7 @@ function Header() {
         <HeaderOption title="Jobs" Icon={BusinessCenterIcon} />
         <HeaderOption title="Messaging" Icon={ChatIcon} />
         <HeaderOption title="Notifications" Icon={NotificationsIcon} />
-        <HeaderOption title="me" avatar={Me} />
+        <HeaderOption title="me" avatar={Me} onClick={logoutOfApp} />
       </div>
     </div>
   );

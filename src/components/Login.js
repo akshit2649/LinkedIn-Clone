@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import "./Login.css";
 import { auth } from "../firabse";
 import { useDispatch } from "react-redux";
@@ -7,12 +7,12 @@ import { login } from "../features/userSlice";
 function Login() {
   const email = useRef();
   const password = useRef();
-  const name = useRef();
+  const [name, setName] = useState("");
   const profilePic = useRef();
   const dispatch = useDispatch();
 
-  const register = async () => {
-    if (name.current.value.length === 0) {
+  const register = () => {
+    if (name.length === 0) {
       return alert("Enter a valid name");
     }
 
@@ -24,16 +24,16 @@ function Login() {
       .then((userAuth) => {
         userAuth.user
           .updateProfile({
-            displayName: name.current.value,
+            displayName: name,
             photoURL: profilePic.current.value,
           })
           .then(() => {
             dispatch(
               login({
                 email: userAuth.user.email,
-                uis: userAuth.user.uid,
-                displayName: name.current.value,
-                photoURL: profilePic.current.value,
+                uid: userAuth.user.uid,
+                displayName: userAuth.user.displayName,
+                photoURL: userAuth.user.photoURL,
               })
             );
           });
@@ -43,7 +43,21 @@ function Login() {
 
   const loginToApp = (e) => {
     e.preventDefault();
-    console.log("Logged in to app");
+    auth
+      .signInWithEmailAndPassword(email.current.value, password.current.value)
+      .then((userAuth) => {
+        dispatch(
+          login({
+            email: userAuth.user.id,
+            uid: userAuth.user.uid,
+            displayName: userAuth.user.displayName,
+            profileUrl: userAuth.user.photoURL,
+          })
+        );
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
 
   return (
@@ -55,7 +69,8 @@ function Login() {
 
       <form>
         <input
-          ref={name}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           type="text"
           placeholder="Full Name (required if registering)"
         />
