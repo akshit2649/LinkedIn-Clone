@@ -7,48 +7,35 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import CalendarViewDayIcon from "@mui/icons-material/CalendarViewDay";
 import InputOption from "./InputOption";
 import Post from "./Post";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
 import { db } from "../firabse";
+import firebase from "firebase/app";
 
 function Feed() {
   const inputRef = useRef();
   const [posts, setPosts] = useState([]);
 
-  const colRef = collection(db, "posts");
-  const q = query(colRef, orderBy("timestamp", "desc"));
-
   useEffect(() => {
-    onSnapshot(q, (doc) => {
-      let post = doc.docs.map((item) => {
-        return {
-          id: item.id,
-          data: item.data(),
-        };
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        );
       });
-
-      setPosts(post);
-    });
-  }, [q]);
+  }, []);
 
   const sendPost = (e) => {
     e.preventDefault();
 
-    addDoc(collection(db, "posts"), {
+    db.collection("posts").add({
       name: "Akshit Thakur",
-      description: "this is a test",
+      description: "This is a test",
       message: inputRef.current.value,
-      photoUrl: "",
-      timestamp: serverTimestamp(),
-    })
-      .then(() => console.log("Success"))
-      .catch((err) => alert(err.message));
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
 
     inputRef.current.value = "";
   };
