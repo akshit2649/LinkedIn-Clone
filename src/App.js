@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Login from "./components/Login";
 import { auth } from "./firabse";
+import Widget from "./components/Widget";
 
 function App() {
   const user = useSelector(selectUser);
@@ -38,6 +39,7 @@ function App() {
         <div className="app__body">
           <Sidebar />
           <Feed />
+          <Widget />
         </div>
       )}
     </div>
